@@ -3,22 +3,12 @@ package stepDefinitions;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
-import io.cucumber.testng.CucumberOptions;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 
-@CucumberOptions(
-        plugin = {"pretty", "html:target/cucumber"},
-        features = {"src/test/resources/testLogin.feature"},
-        glue={"testLoginSteps"},
-        monochrome = true
-)
 
 public class testLoginSteps {
     WebDriver driver = null;
@@ -37,7 +27,7 @@ public class testLoginSteps {
 
     @When("I click the login button")
     public void i_click_the_login_button() {
-        driver.findElement(By.linkText("Sign in")).click();
+       driver.findElement(By.xpath("/html/body/main/div[1]/div/div[2]/form/button")).click();
     }
 
     @Then("I should be logged in")
