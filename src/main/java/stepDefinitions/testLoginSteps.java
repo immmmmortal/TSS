@@ -36,4 +36,17 @@ public class testLoginSteps {
         driver.close();
         driver.quit();
     }
+
+    @When("I enter invalid credentials")
+    public void iEnterInvalidCredentials() {
+        driver.findElement(By.name("login")).sendKeys("kua617@gmail.com");
+        driver.findElement(By.name("password")).sendKeys(".kYM8jj8cJCpuD");
+    }
+
+    @Then("I should not be logged in")
+    public void iShouldNotBeLoggedIn() {
+        driver.findElement(By.xpath("/html/body/main/div[1]/div/div[2]/div")).isDisplayed();
+        driver.close();
+        driver.quit();
+    }
 }
