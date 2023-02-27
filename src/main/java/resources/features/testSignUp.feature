@@ -3,4 +3,4 @@ Feature: sign up
      Given I am on the registration page
      When I enter credentials for registration
      And I click Sign up
-     Then I should be logged in
+     Then I am logged in

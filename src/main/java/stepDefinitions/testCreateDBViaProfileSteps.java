@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertTrue;
@@ -27,17 +28,29 @@ public class testCreateDBViaProfileSteps {
         driver.navigate().to("http://localhost:7000/login");
 
 
-
         driver.findElement(By.name("login")).sendKeys("kuza617@gmail.com");
         driver.findElement(By.name("password")).sendKeys(".kYM8jRj8cJCpuD");
         driver.findElement(By.xpath("/html/body/main/div[1]/div/div[2]/form/button")).click();
     }
 
+    public boolean elementExists(By locator) {
+        return !driver.findElements(locator).isEmpty();
+    }
+
     @When("I create a new database on my profile page")
     public void i_create_a_new_database_with_name() {
 
-        WebElement createDatabaseButton = driver.findElement(By.xpath("/html/body/div/div/main/div[3]/form/button"));
-        createDatabaseButton.click();
+        if (driver.getPageSource().contains("You reach you DB limit - delete one or upgrade plan.")) {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/div/main/div[3]/div/div[2]/div[1]/div[2]/div/form/button")));
+            driver.findElement(By.xpath("/html/body/div/div/main/div[3]/div/div[2]/div[1]/div[2]/div/form/button")).click();
+            driver.navigate().back();
+            driver.navigate().refresh();
+            driver.findElement(By.xpath("/html/body/div/div/main/div[3]/form/button")).click();
+        } else {
+            driver.findElement(By.xpath("/html/body/div/div/main/div[3]/form/button")).click();
+        }
+
     }
 
     @Then("database should be listed in my account info")
@@ -49,6 +62,8 @@ public class testCreateDBViaProfileSteps {
         boolean databaseList = driver.findElement(By.xpath("/html/body/div/div/main/div[3]/div/div[2]")).isDisplayed();
         assertTrue(databaseList);
 
+        driver.close();
         driver.quit();
+
     }
 }
