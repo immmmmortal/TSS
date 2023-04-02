@@ -6,10 +6,12 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 
-public class Hmac {
+public final class Hmac {
     private static final String HMAC_SHA384 = "HmacSHA384";
 
-    private static String toHexString(byte[] bytes) { 
+    private Hmac() { }
+
+    private static String toHexString(byte[] bytes) {
         Formatter formatter = new Formatter();
         for (byte b : bytes) {
             formatter.format("%02x", b);

@@ -14,11 +14,13 @@ import org.sql2o.Connection;
 
 import java.io.File;
 
-public class UserService {
+public final class UserService {
+
+    private UserService() { }
 
 
-    private static final ParameterizedStringFactory CREATE_TABLESPACE_SQL
-            = new ParameterizedStringFactory("CREATE TABLESPACE :name" +
+    private static final ParameterizedStringFactory CREATE_TABLESPACE_SQL =
+            new ParameterizedStringFactory("CREATE TABLESPACE :name" +
             "    OWNER :name" +
             "    LOCATION ':path'");
 
@@ -37,7 +39,7 @@ public class UserService {
     public static User byLogin(String login) {
         try (Connection con = DBPool.getConnection().open()) {
             var user = con.createQuery(USER_BY_LOGIN_SQL).addParameter("login", login).executeAndFetchFirst(User.class);
-            if (user == null){
+            if (user == null) {
                 throw new NotFoundException(String.format("User with mail %s not found", login));
             }
             return  user;
@@ -60,17 +62,17 @@ public class UserService {
 
     //"    [ WITH ( параметр_табличного_пространства = значение [, ... ] ) ]"
     public static void createTablespace(String owner, String path) {
-        String create_tablespace = CREATE_TABLESPACE_SQL.addParameter("name", owner).addParameter("path", path.replace("\\", "\\\\")).toString();
-        System.out.println(create_tablespace);
+        String createTablespace = CREATE_TABLESPACE_SQL.addParameter("name", owner).addParameter("path", path.replace("\\", "\\\\")).toString();
+        System.out.println(createTablespace);
         DBPool.getConnection().open()
-                .createQuery(create_tablespace, false)
+                .createQuery(createTablespace, false)
                 .executeUpdate();
     }
 
-    private static final ParameterizedStringFactory CHANGE_OWNER
-            = new ParameterizedStringFactory("sudo chown -f :user :path");
-    private static final ParameterizedStringFactory CHANGE_MODE
-            = new ParameterizedStringFactory("chmod 700 :path");
+    private static final ParameterizedStringFactory CHANGE_OWNER =
+            new ParameterizedStringFactory("sudo chown -f :user :path");
+    private static final ParameterizedStringFactory CHANGE_MODE =
+            new ParameterizedStringFactory("chmod 700 :path");
 
     public static User byPublicKey(String publicKey) {
         try (Connection con = DBPool.getConnection().open()) {
@@ -121,11 +123,33 @@ public class UserService {
 
     public static User byToken(String token) {
         try (Connection con = DBPool.getConnection().open()) {
-            var user=  con.createQuery(USER_BY_TOKEN_SQL).addParameter("token", token).executeAndFetchFirst(User.class);
-            if (user == null){
+            var user = con.createQuery(USER_BY_TOKEN_SQL).addParameter("token", token).executeAndFetchFirst(User.class);
+            if (user == null) {
                 throw new NotFoundException(String.format("User with token %s not found", token));
             }
             return  user;
         }
+    }
+
+    public static void deleteUserStorage(String owner) {
+        try {
+            String path = userStoragePath(owner);
+            FileUtils.deleteDirectory(new File(path));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static final ParameterizedStringFactory DROP_TABLESPACE_SQL = new ParameterizedStringFactory("Drop tablespace :name");
+    public static void dropTablespace(String name) {
+        String dropTablespace = DROP_TABLESPACE_SQL.addParameter("name", name).toString();
+        DBPool.getConnection().open().createQuery(dropTablespace, false).executeUpdate();
+    }
+
+    private static final ParameterizedStringFactory DELETE_USER_SQL = new ParameterizedStringFactory("Delete from users where login = :login");
+    public static void deleteUser(String login) {
+        String deleteUser = DELETE_USER_SQL.addParameter("login", "'" + login + "'").toString();
+        System.out.println(deleteUser);
+        DBPool.getConnection().open().createQuery(deleteUser, false).executeUpdate();
     }
 }

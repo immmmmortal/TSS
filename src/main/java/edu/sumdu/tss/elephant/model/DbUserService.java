@@ -1,16 +1,18 @@
 package edu.sumdu.tss.elephant.model;
 
 import edu.sumdu.tss.elephant.helper.DBPool;
-import edu.sumdu.tss.elephant.helper.utils.CmdUtil;
 import edu.sumdu.tss.elephant.helper.utils.ParameterizedStringFactory;
 import io.javalin.core.util.JavalinLogger;
 
 import java.io.File;
+import java.util.List;
 
-public class DbUserService {
+public final class DbUserService {
 
     private static final ParameterizedStringFactory CREATE_USER_SQL = new ParameterizedStringFactory("CREATE USER :name WITH PASSWORD ':password' CONNECTION LIMIT 5 IN ROLE customer;");
     private static final ParameterizedStringFactory DELETE_USER_SQL = new ParameterizedStringFactory("DROP USER :name");
+
+    private DbUserService() { }
 
     public static void initUser(String username, String password) {
         //Create user
@@ -34,15 +36,20 @@ public class DbUserService {
     }
 
     public static void dropUser(String name) {
-        //Drop user
-        var connection = DBPool.getConnection();
-        try (var context = connection.beginTransaction()) {
-            context.createQuery(DELETE_USER_SQL.addParameter("name", name).toString(), false).executeUpdate();
+        try {
+            //Drop databases
+            List<Database> databases = DatabaseService.forUser(name);
+            for (Database database:databases) {
+                DatabaseService.drop(database);
+            }
+            //Drop tablespace
+            UserService.dropTablespace(name);
+            //Drop user
+            String dropUser = DELETE_USER_SQL.addParameter("name", name).toString();
+            DBPool.getConnection().open().createQuery(dropUser, false).executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        //TODO: drop all database
-        //Drop tablespace
-        String path = UserService.userStoragePath(name);
-        //TODO: create script for removing user profile
-        CmdUtil.exec(String.format("sudo remove-user %s", path));
+
     }
 }

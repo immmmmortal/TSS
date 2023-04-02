@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-public class BackupService {
+public final class BackupService {
 
     private static final String LIST_BACKUP_SQL = "SELECT * from backups where database = :database";
     private static final String GET_BY_NAME_SQL = "SELECT * from backups where database = :database and point = :point";
@@ -26,6 +26,8 @@ public class BackupService {
                        "updatedAt" = now();""";
     private static final String DELETE_BACKUP = "DELETE FROM backups WHERE database = :database and point = :point;";
     private static final ParameterizedStringFactory DROP_DB = new ParameterizedStringFactory("DROP DATABASE :database WITH (FORCE);");
+
+    private BackupService() { }
 
     public static List<Backup> list(String dbName) {
         try (Connection con = DBPool.getConnection().open()) {
@@ -72,7 +74,7 @@ public class BackupService {
         }
     }
 
-    static public void restore(String owner, String dbName, String pointName) throws BackupException {
+    public static void restore(String owner, String dbName, String pointName) throws BackupException {
         try (Connection con = DBPool.getConnection().open()) {
             Backup point = con.createQuery(GET_BY_NAME_SQL)
                     .addParameter("database", dbName)
@@ -114,20 +116,19 @@ public class BackupService {
         } catch (Exception ex) {
             throw new HttpError500(ex);
         }
-        CmdUtil.exec(String.format("pg_dump --format=custom --dbname=%s  --file=\"%s\"", DBPool.dbUtilUrl(database), path));
+        CmdUtil.exec(String.format("pg_dump --format=custom --dbname=%s  --file=%s", DBPool.dbUtilUrl(database), path));
     }
 
     private static void restoreBackup(String owner, String database, String pointName) {
         String path = filePath(owner, database, pointName);
-        //DBPool.getConnection().open().createQuery(DROP_DB.addParameter("database", database).toString(), false).executeUpdate();
         var recreate = DatabaseService.exists(database) ? "--clean" : "";
-        CmdUtil.exec(String.format("pg_restore %s --create --dbname=%s \"%s\"", recreate, DBPool.dbUtilUrl(DBPool.DEFAULT_DATABASE), path));
+        CmdUtil.exec(String.format("pg_restore %s --create --dbname=%s %s", recreate, DBPool.dbUtilUrl(DBPool.DEFAULT_DATABASE), path));
     }
 
     public static String filePath(String owner, String database, String pointName) {
         return UserService.userStoragePath(owner) +
                 File.separator + "backups" +
                 File.separator + database +
-                File.separator + pointName;
+                File.separator + pointName.replaceAll("\s", "\\ ");
     }
 }

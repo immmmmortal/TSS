@@ -28,7 +28,7 @@ public class BackupController extends AbstractController {
         var currentUser = currentUser(context);
         int currentBackupCount = BackupService.list(dbName).size();
         if (currentBackupCount >= currentUser.role().maxBackupsPerDB()) {
-            ViewHelper.softError("You limit reached",context);
+            ViewHelper.softError("You limit reached", context);
             return;
         }
 
@@ -36,7 +36,7 @@ public class BackupController extends AbstractController {
         if (point == null) {
             point = context.pathParam("point");
         }
-        if (point==null || point.isBlank()){
+        if (point == null || point.isBlank()) {
             ViewHelper.softError("Point name can't be empty", context);
             return;
         }

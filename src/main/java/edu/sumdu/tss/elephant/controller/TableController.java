@@ -15,6 +15,12 @@ public class TableController extends AbstractController {
 
     public static final String BASIC_PAGE = "/database/{database}/table/";
     private static final ParameterizedStringFactory DEFAULT_CRUMB = new ParameterizedStringFactory("<a href='/database/:database/table'>Tables</a>");
+    private static final int DEFAULT_LIMIT = 10;
+    private static final int DEFAULT_OFFSET = 0;
+    private static final int MAX_LIMIT = 10000;
+    private static final int MAX_OFFSET = 10000;
+    private static final int MIN_OFFSET = 0;
+    private static final int MIN_LIMIT = 0;
 
     public TableController(Javalin app) {
         super(app);
@@ -29,11 +35,11 @@ public class TableController extends AbstractController {
         context.render("/velocity/table/index.vm", model);
     }
 
-    public static void preview_table(Context context) {
+    public static void previewTable(Context context) {
         Database database = currentDB(context);
         String tableName = context.pathParam("table");
-        int limit = context.queryParamAsClass("limit", Integer.class).check(it-> it>0 && it < 10000,"Limit must be a positive").getOrDefault(10);
-        int offset = context.queryParamAsClass("offset", Integer.class).check(it-> it>0 && it < 10000,"Offset must be a positive").getOrDefault(0);
+        int limit = context.queryParamAsClass("limit", Integer.class).check(it -> it > MIN_LIMIT && it < MAX_LIMIT, "Limit must be a positive").getOrDefault(DEFAULT_LIMIT);
+        int offset = context.queryParamAsClass("offset", Integer.class).check(it -> it > MIN_OFFSET && it < MAX_OFFSET, "Offset must be a positive").getOrDefault(DEFAULT_OFFSET);
         var table = TableService.byName(database.getName(), tableName, limit, offset * limit);
         int size = TableService.getTableSize(database.getName(), tableName);
 
@@ -50,7 +56,7 @@ public class TableController extends AbstractController {
     @Override
     public void register(Javalin app) {
         app.get(BASIC_PAGE, TableController::index, UserRole.AUTHED);
-        app.get(BASIC_PAGE + "{table}", TableController::preview_table, UserRole.AUTHED);
+        app.get(BASIC_PAGE + "{table}", TableController::previewTable, UserRole.AUTHED);
     }
 
 }

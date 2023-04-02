@@ -7,13 +7,15 @@ import edu.sumdu.tss.elephant.helper.utils.ParameterizedStringFactory;
 
 import java.util.List;
 
-public class DatabaseService {
+public final class DatabaseService {
 
     private static final String GET_BY_NAME_SQL = "select * from databases where name = :name";
     private static final String GET_BY_OWNER_SQL = "select * from databases where owner = :owner";
     private static final String DB_SIZE = "SELECT pg_database_size(:database)";
     private static final ParameterizedStringFactory CREATE_DATABASE_SQL = new ParameterizedStringFactory("CREATE database :name WITH OWNER :owner TABLESPACE :tablespace");
     private static final String REGISTER_DATABASE_SQL = "insert into databases(name, owner) values(:name, :owner)";
+
+    private DatabaseService() { }
 
     /**
      *  Return Database with given name owned by user
@@ -32,7 +34,7 @@ public class DatabaseService {
 
 
     private static final String PG_DB_SQL = "select datname from pg_database where datname=:name";
-    public static boolean exists(String dbName){
+    public static boolean exists(String dbName) {
         var database = DBPool.getConnection().open().createQuery(PG_DB_SQL).addParameter("name", dbName).executeScalar(String.class);
         return database != null;
     }

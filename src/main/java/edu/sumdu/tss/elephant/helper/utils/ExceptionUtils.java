@@ -8,8 +8,10 @@ import io.javalin.http.Context;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class ExceptionUtils {
+public final class ExceptionUtils {
     private static final CharSequence SQL_UNIQ_EXCEPTION_MESSAGE = "duplicate key value violates unique constraint";
+
+    private ExceptionUtils() { }
 
     public static String validationMessages(io.javalin.core.validation.ValidationException ex) {
         StringBuilder message = new StringBuilder();

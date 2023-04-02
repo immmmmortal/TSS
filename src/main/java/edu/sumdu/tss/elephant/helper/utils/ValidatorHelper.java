@@ -3,7 +3,10 @@ package edu.sumdu.tss.elephant.helper.utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ValidatorHelper {
+public final class ValidatorHelper {
+
+    private ValidatorHelper() { }
+
     /**
      * Validate user password
      *

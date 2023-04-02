@@ -6,7 +6,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class CmdUtil {
+public final class CmdUtil {
+
+    private CmdUtil() { }
+
     public static void exec(String command) {
         var result = new StringBuilder();
         try {

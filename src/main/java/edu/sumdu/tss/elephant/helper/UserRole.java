@@ -114,13 +114,13 @@ public enum UserRole implements RouteRole {
     };
 
 
-    public final static RouteRole[] AUTHED = {UserRole.UNCHEKED, UserRole.BASIC_USER, UserRole.PROMOTED_USER, UserRole.ADMIN};
+    public static final RouteRole[] AUTHED = {UserRole.UNCHEKED, UserRole.BASIC_USER, UserRole.PROMOTED_USER, UserRole.ADMIN};
 
     @Getter
     private final Long value;
 
-    UserRole(int value) {
-        this.value = (long) value;
+    UserRole(int inputValue) {
+        value = (long) inputValue;
     }
 
     public static UserRole byValue(long value) {

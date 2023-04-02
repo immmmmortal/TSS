@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class DBPool {
+public final class DBPool {
 
     public static final String DEFAULT_DATABASE = Keys.get("DB.NAME");
-    private static final HashMap<String, Pair<Long, Sql2o>> storage = new HashMap<>();
+    private static final HashMap<String, Pair<Long, Sql2o>> STORAGE = new HashMap<>();
     private static final int MAX_CONNECTION = 10;
-    public static final ParameterizedStringFactory dbUrl =
+    public static final ParameterizedStringFactory DB_URL =
             new ParameterizedStringFactory(
                     new ParameterizedStringFactory("jdbc:postgresql://:url::port/:database")
                             .addParameter("url", Keys.get("DB.URL"))
@@ -20,26 +20,28 @@ public class DBPool {
                             .toString());
     private static long counter = 0;
 
+    private DBPool() { }
+
     public static Sql2o getConnection() {
         return getConnection(DEFAULT_DATABASE);
     }
 
     public static Sql2o getConnection(String dbname) {
         counter += 1;
-        boolean is_new = false;
-        Pair<Long, Sql2o> temp = storage.get(dbname);
+        boolean isNew = false;
+        Pair<Long, Sql2o> temp = STORAGE.get(dbname);
         if (temp == null) {
-            if (storage.size() > MAX_CONNECTION) {
+            if (STORAGE.size() > MAX_CONNECTION) {
                 flush();
             }
             temp = new Pair<>();
-            is_new = true;
+            isNew = true;
         }
 
         temp.key = counter;
-        if (is_new) {
-            temp.value = new Sql2o(dbUrl.addParameter("database", dbname).toString(), Keys.get("DB.USERNAME"), Keys.get("DB.PASSWORD"));
-            storage.put(dbname, temp);
+        if (isNew) {
+            temp.value = new Sql2o(DB_URL.addParameter("database", dbname).toString(), Keys.get("DB.USERNAME"), Keys.get("DB.PASSWORD"));
+            STORAGE.put(dbname, temp);
         }
         return temp.value;
     }
@@ -50,7 +52,7 @@ public class DBPool {
 
     private static void flush() {
         Map.Entry<String, Pair<Long, Sql2o>> tmp = null;
-        for (Map.Entry<String, Pair<Long, Sql2o>> pair : storage.entrySet()) {
+        for (Map.Entry<String, Pair<Long, Sql2o>> pair : STORAGE.entrySet()) {
             if (tmp == null) {
                 tmp = pair;
             }
@@ -59,7 +61,7 @@ public class DBPool {
             }
         }
         if (tmp != null) {
-            storage.remove(tmp.getKey());
+            STORAGE.remove(tmp.getKey());
         }
     }
 

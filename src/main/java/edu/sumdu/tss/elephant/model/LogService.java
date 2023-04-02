@@ -5,9 +5,11 @@ import edu.sumdu.tss.elephant.helper.Keys;
 import io.javalin.http.Context;
 import org.sql2o.Connection;
 
-public class LogService {
+public final class LogService {
 
     private static final String INSERT_LOG_SQL = "INSERT INTO LOGGER(ip, database, \"user\", message) values(:ip, :database, :user, :message);";
+
+    private LogService() { }
 
     public static void push(Context context, String database, String message) {
         try (Connection con = DBPool.getConnection().open()) {

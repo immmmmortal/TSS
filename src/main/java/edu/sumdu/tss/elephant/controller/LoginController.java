@@ -25,6 +25,7 @@ import java.util.Optional;
 public class LoginController extends AbstractController {
 
     public static final String BASIC_PAGE = "/login";
+    private static final int HTTP_STATUS_FOUND = 302;
 
     public LoginController(Javalin app) {
         super(app);
@@ -52,7 +53,6 @@ public class LoginController extends AbstractController {
         } catch (Exception ex) {
             ExceptionUtils.wrapError(context, ex);
         }
-
         if (user != null && user.getPassword().equals(user.crypt(password))) {
             context.sessionAttribute(Keys.SESSION_CURRENT_USER_KEY, user);
             context.redirect(HomeController.BASIC_PAGE);
@@ -60,7 +60,7 @@ public class LoginController extends AbstractController {
         } else {
             context.sessionAttribute(Keys.ERROR_KEY, mb.get("validation.user.not_found"));
         }
-        context.redirect(BASIC_PAGE, 302);
+        context.redirect(BASIC_PAGE, HTTP_STATUS_FOUND);
     }
 
     public static void resetLink(Context context) {
@@ -76,7 +76,7 @@ public class LoginController extends AbstractController {
                 var lang = Lang.byValue(user.getLanguage());
                 MailService.sendResetLink(user.getToken(), user.getLogin(), lang);
                 context.sessionAttribute(Keys.INFO_KEY, mb.get("login.reset.success_send"));
-                context.redirect(BASIC_PAGE, 302);
+                context.redirect(BASIC_PAGE, HTTP_STATUS_FOUND);
                 return;
             }
         } catch (MessagingException ex) {
@@ -90,7 +90,7 @@ public class LoginController extends AbstractController {
         Map<String, Object> model = currentModel(context);
         model.put(Keys.ERROR_KEY, context.sessionAttribute(Keys.ERROR_KEY));
         model.put(Keys.INFO_KEY, context.sessionAttribute(Keys.INFO_KEY));
-        ResponseUtils.flush_flash(context);
+        ResponseUtils.flushFlash(context);
         context.render("/velocity/login/reset-link.vm", model);
     }
 
@@ -106,7 +106,7 @@ public class LoginController extends AbstractController {
                         .check(ValidatorHelper::isValidPassword, mb.get("validation.invalid.empty"))
                         .get();
                 var user = UserService.byToken(token);
-                user.setPassword(password);
+                user.password(password);
                 user.resetToken();
                 UserService.save(user);
                 context.sessionAttribute(Keys.INFO_KEY, mb.get("login.reset.success_reset"));
@@ -125,12 +125,12 @@ public class LoginController extends AbstractController {
         model.put("token", token);
         model.put(Keys.ERROR_KEY, context.sessionAttribute(Keys.ERROR_KEY));
         model.put(Keys.INFO_KEY, context.sessionAttribute(Keys.INFO_KEY));
-        ResponseUtils.flush_flash(context);
+        ResponseUtils.flushFlash(context);
         context.render("/velocity/login/reset.vm", model);
     }
 
     public static void destroy(Context context) {
-        ResponseUtils.flush_flash(context);
+        ResponseUtils.flushFlash(context);
         context.sessionAttribute(Keys.SESSION_CURRENT_USER_KEY, null);
         context.redirect(BASIC_PAGE);
     }

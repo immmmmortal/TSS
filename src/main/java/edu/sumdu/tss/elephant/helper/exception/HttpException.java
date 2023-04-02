@@ -2,6 +2,7 @@ package edu.sumdu.tss.elephant.helper.exception;
 
 public class HttpException extends RuntimeException {
     private static final String DEFAULT_ICON = "bug";
+    private static final int HTTP_STATUS_CODE = 500;
 
     public HttpException() {
         super();
@@ -20,7 +21,7 @@ public class HttpException extends RuntimeException {
     }
 
     public Integer getCode() {
-        return 500;
+        return HTTP_STATUS_CODE;
     }
 
     public String getIcon() {

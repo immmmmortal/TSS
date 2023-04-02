@@ -18,6 +18,7 @@ public final class ViewHelper {
     public static final String[] FLASH_KEY = {Keys.ERROR_KEY, Keys.INFO_KEY};
 
     private static final Pattern DB_NAME_PATTERN = Pattern.compile("database/(\\w+)");
+    private static final int INITIAL_CAPACITY = 500;
 
 
     private ViewHelper() {
@@ -94,7 +95,7 @@ public final class ViewHelper {
     }
 
     public static String pager(int totalPage, int currentPage) {
-        StringBuilder pager = new StringBuilder(500);
+        StringBuilder pager = new StringBuilder(INITIAL_CAPACITY);
         pager.append("<nav>\n<ul class=\"pagination\">");
         for (int i = 1; i < totalPage; i++) {
             if (i != currentPage) {
@@ -133,5 +134,12 @@ public final class ViewHelper {
 
     public static void redirectBack(Context context) {
         context.redirect(Optional.ofNullable(context.header("Referer")).orElse("/"));
+    }
+
+    public static String getDeleteButton() {
+        return "<br/><br/>" +
+                "<form action=\"/profile/remove-self\" method=\"POST\">" +
+                "<button class=\"btn\">Delete</button>" +
+                "</form>";
     }
 }

@@ -8,8 +8,11 @@ import org.sql2o.Connection;
 import java.io.File;
 import java.util.List;
 
-public class ScriptService {
+public final class ScriptService {
     private static final String LIST_SCRIPT_SQL = "SELECT * from scripts where database = :database";
+
+    private ScriptService() { }
+
     public static List<Script> list(String dbName) {
         try (Connection con = DBPool.getConnection().open()) {
             return con.createQuery(LIST_SCRIPT_SQL).addParameter("database", dbName).executeAndFetch(Script.class);

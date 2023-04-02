@@ -17,6 +17,10 @@ import java.security.NoSuchAlgorithmException;
 //FIXME: no time nonce
 public final class ApiController extends AbstractController {
     public static final String BASIC_PAGE = "/api/v1/";
+    public static final int HTTP_STATUS_NO_CONTENT = 204;
+    public static final int HTTP_STATUS_NOT_FOUND = 404;
+    public static final int HTTP_STATUS_FORBIDDEN = 403;
+    public static final int HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 
     public ApiController(final Javalin app) {
         super(app);
@@ -54,12 +58,18 @@ public final class ApiController extends AbstractController {
             BackupService.perform(database.getOwner(), database.getName(), pointName);
         } catch (AccessRestrictedException ex) {
             ctx.json(ResponseUtils.error("Can't validate user"));
+            ctx.status(HTTP_STATUS_FORBIDDEN);
             return;
-        } catch (BackupException | NotFoundException ex) {
+        } catch (BackupException ex) {
             ctx.json(ResponseUtils.error("Backup error" + ex.getMessage()));
+            ctx.status(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            return;
+        } catch (NotFoundException ex) {
+            ctx.json(ResponseUtils.error(ex.getMessage()));
+            ctx.status(HTTP_STATUS_NOT_FOUND);
             return;
         }
-        ctx.status(204);
+        ctx.status(HTTP_STATUS_NO_CONTENT);
     }
 
     @OpenApi(
@@ -75,12 +85,18 @@ public final class ApiController extends AbstractController {
             BackupService.restore(database.getOwner(), database.getName(), pointName);
         } catch (AccessRestrictedException ex) {
             ctx.json(ResponseUtils.error("Can't validate user"));
+            ctx.status(HTTP_STATUS_FORBIDDEN);
             return;
-        } catch (BackupException | NotFoundException ex) {
+        } catch (BackupException ex) {
             ctx.json(ResponseUtils.error("Backup error" + ex.getMessage()));
+            ctx.status(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            return;
+        } catch (NotFoundException ex) {
+            ctx.json(ResponseUtils.error(ex.getMessage()));
+            ctx.status(HTTP_STATUS_NOT_FOUND);
             return;
         }
-        ctx.status(204);
+        ctx.status(HTTP_STATUS_NO_CONTENT);
     }
 
     private static Database verifyRights(final Context ctx) throws AccessRestrictedException {

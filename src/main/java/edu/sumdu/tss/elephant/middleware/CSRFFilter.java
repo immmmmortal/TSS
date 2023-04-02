@@ -5,7 +5,9 @@ import io.javalin.http.Context;
 
 import java.util.Optional;
 
-public class CSRFFilter {
+public final class CSRFFilter {
+
+    private CSRFFilter() { }
 
     public static void check(Context ctx) {
         if (!ctx.req.getMethod().equals("POST")) {

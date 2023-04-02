@@ -30,7 +30,7 @@ public class DatabaseController extends AbstractController {
         User user = currentUser(context);
         int currentScriptCount = DatabaseService.forUser(user.getUsername()).size();
         if (currentScriptCount >= user.role().maxDB()) {
-            ViewHelper.softError("You limit reached",context);
+            ViewHelper.softError("You limit reached", context);
             return;
         }
 

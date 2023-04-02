@@ -24,6 +24,8 @@ import java.util.ArrayList;
 public class ScriptsController extends AbstractController {
 
     public static final String BASIC_PAGE = "/database/{database}/script/";
+    private static final int FILE_NAME_SIZE = 20;
+    private static final int INITIAL_CAPACITY = 500;
 
     public ScriptsController(Javalin app) {
         super(app);
@@ -34,19 +36,19 @@ public class ScriptsController extends AbstractController {
         var currentUser = currentUser(context);
         int currentScriptCount = ScriptService.list(database.getName()).size();
         if (currentScriptCount >= currentUser.role().maxScriptsPerDB()) {
-            ViewHelper.softError("You limit reached",context);
+            ViewHelper.softError("You limit reached", context);
             return;
         }
 
         var file = context.uploadedFile("file");
-        var description = context.formParamAsClass("description",String.class).getOrDefault("");
+        var description = context.formParamAsClass("description", String.class).getOrDefault("");
         String path = UserService.userStoragePath(currentUser.getUsername()) +
                 File.separator + "scripts" +
                 File.separator + database.getName() +
-                File.separator + StringUtils.randomAlphaString(20);
+                File.separator + StringUtils.randomAlphaString(FILE_NAME_SIZE);
         var destinationFile = new File(path);
         try {
-            assert file != null;
+            assert (file != null);
             FileUtils.forceMkdirParent(destinationFile);
             FileUtils.copyInputStreamToFile(file.getContent(), destinationFile);
         } catch (IOException ex) {
@@ -87,7 +89,7 @@ public class ScriptsController extends AbstractController {
     public static void run(Context context) {
         Statement statement = null;
         Connection connection = null;
-        var list = new ArrayList<Pair<String, String>>(500);
+        var list = new ArrayList<Pair<String, String>>(INITIAL_CAPACITY);
         try {
             String database = context.pathParam("database");
             String scriptId = context.pathParam("script");
@@ -114,15 +116,19 @@ public class ScriptsController extends AbstractController {
         } catch (SQLException ex) {
             throw new HttpError500("Problem with database connection", ex);
         } finally {
-            if (statement != null) try {
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-            if (connection != null) try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
         var model = currentModel(context);

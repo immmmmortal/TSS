@@ -5,12 +5,14 @@ import com.google.common.hash.Hashing;
 
 import java.nio.charset.StandardCharsets;
 
-public class CSRFTokenService {
+public final class CSRFTokenService {
 
     // this is wrong! You need no token for no-auth pages
     // Just for example
     public static final String NO_AUTH = "not-auth-user";
-    static private String siteWideToken = "test token";
+    private static String siteWideToken = "test token";
+
+    private CSRFTokenService() { }
 
     public static String getSiteWideToken() {
         if (siteWideToken != null) {

@@ -25,7 +25,7 @@ public class Server {
         app = Javalin.create(
                         config -> {
                             config.addStaticFiles("/public", Location.CLASSPATH);
-                            config.accessManager(CustomAccessManager.accessManager);
+                            config.accessManager(CustomAccessManager.ACCESS_MANAGER);
                             config.registerPlugin(new OpenApiPlugin(getOpenApiOptions()));
                         })
                 //TODO: fix this: csrf checking work only for '/'

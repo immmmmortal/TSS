@@ -13,6 +13,8 @@ import java.sql.*;
 public class SqlController extends AbstractController {
 
     public static final String BASIC_PAGE = "/database/{database}/sql";
+    private static final int INITIAL_CAPACITY = 500;
+    private static final int MAX_ROWS = 300;
 
     public SqlController(Javalin app) {
         super(app);
@@ -29,7 +31,7 @@ public class SqlController extends AbstractController {
     public static void run(Context context) {
         String query = context.formParam("query");
 
-        StringBuilder builder = new StringBuilder(500);
+        StringBuilder builder = new StringBuilder(INITIAL_CAPACITY);
         if (query == null || query.isBlank()) {
             context.result("<pre class='query'></pre>");
             return;
@@ -69,10 +71,11 @@ public class SqlController extends AbstractController {
 
                         builder.append(alt);
                         builder.append("<td>").append(rn++).append("</td>");
-                        for (String columnLabel : columnLabels)
+                        for (String columnLabel : columnLabels) {
                             builder.append("<td>").append(rs.getString(columnLabel)).append("</td>");
+                        }
                         builder.append("</tr>");
-                        if (rn > 300) {
+                        if (rn > MAX_ROWS) {
                             builder.append("<tr><td colspan=\"").append(columnLabels.length).append("\"><strong style='color: red;'>300+ (extra rows omitted)</strong></td></tr>");
                             break;
                         }
@@ -82,7 +85,7 @@ public class SqlController extends AbstractController {
                     builder.append("DDL/DML performed");
                     if (!st.isClosed()) { // thorw error on closed statement
                         int updated = st.getUpdateCount();
-                        if (updated > 0) {// -1 Stands for DDL
+                        if (updated > 0) { // -1 Stands for DDL
                             builder.append(" Changed: ").append(st.getUpdateCount());
                         }
                     }
@@ -98,20 +101,26 @@ public class SqlController extends AbstractController {
         } catch (SQLException e) {
             context.result("<strong style='color: red;'>" + e.getMessage() + "</strong>");
         } finally {
-            if (rs != null) try {
-                rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-            if (st != null) try {
-                st.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (st != null) {
+                try {
+                    st.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-            if (conn != null) try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

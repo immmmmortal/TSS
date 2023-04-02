@@ -2,6 +2,8 @@ package edu.sumdu.tss.elephant.helper.exception;
 
 public class HttpError400 extends HttpException {
 
+    private static final int HTTP_STATUS_CODE = 400;
+
     public HttpError400() {
         super();
     }
@@ -15,7 +17,7 @@ public class HttpError400 extends HttpException {
     }
 
     public Integer getCode() {
-        return 400;
+        return HTTP_STATUS_CODE;
     }
 
 }

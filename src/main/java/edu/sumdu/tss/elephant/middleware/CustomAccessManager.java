@@ -11,11 +11,16 @@ import io.javalin.core.util.JavalinLogger;
 /**
  * Access manager class
  */
-public class CustomAccessManager {
+public final class CustomAccessManager {
+
+    private static final int HTTP_STATUS_FOUND = 302;
+
+    private CustomAccessManager() { }
+
     /**
      * Access manager to block unauthorized api calls
      */
-    public static final AccessManager accessManager = (handler, ctx, permittedRoles) -> {
+    public static final AccessManager ACCESS_MANAGER = (handler, ctx, permittedRoles) -> {
         if (permittedRoles.size() == 0) {
             //No roles->no permission check
             handler.handle(ctx);
@@ -28,7 +33,7 @@ public class CustomAccessManager {
             return;
         }
         JavalinLogger.info(String.format("Permission deny to %s for %s", ctx.contextPath(), (user == null) ? "NoUser" : user.toString()));
-        ctx.redirect(userRole == UserRole.ANYONE ? LoginController.BASIC_PAGE : HomeController.BASIC_PAGE, 302);
+        ctx.redirect(userRole == UserRole.ANYONE ? LoginController.BASIC_PAGE : HomeController.BASIC_PAGE, HTTP_STATUS_FOUND);
     };
 
     private static UserRole getUserRole(User currentUser) {

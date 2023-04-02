@@ -5,7 +5,9 @@ import io.javalin.http.Context;
 
 import java.util.HashMap;
 
-public class ResponseUtils {
+public final class ResponseUtils {
+
+    private ResponseUtils() { }
 
     private static final String OK_ANSWER = "Ok";
     private static final String ERROR_ANSWER = "Error";
@@ -27,7 +29,7 @@ public class ResponseUtils {
         return answer;
     }
 
-    public static void flush_flash(Context context) {
+    public static void flushFlash(Context context) {
         for (var key : ViewHelper.FLASH_KEY) {
             context.sessionAttribute(key, null);
         }

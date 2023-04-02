@@ -17,9 +17,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 //TODO: reset temaplte for html+password
-public class MailService {
+public final class MailService {
 
-    private static final MailService mail = new MailService();
+    private static final MailService MAIL = new MailService();
     private final String from;
     private final Session session;
 
@@ -29,7 +29,7 @@ public class MailService {
         Properties properties = System.getProperties();
         properties.put("mail.smtp.host", Keys.get("EMAIL.HOST"));
         properties.put("mail.smtp.port", Keys.get("EMAIL.PORT"));
-        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.enable", Keys.get("EMAIL.SSL"));
         properties.put("mail.smtp.auth", "true");
         session = Session.getInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -46,8 +46,8 @@ public class MailService {
      * @param mailTo user email
      */
     public static void sendActivationLink(String token, String mailTo, Lang lang) throws MessagingException {
-        Message message = new MimeMessage(mail.session);
-        message.setFrom(new InternetAddress(mail.from));
+        Message message = new MimeMessage(MAIL.session);
+        message.setFrom(new InternetAddress(MAIL.from));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));
         message.setSubject(new MessageBundle(lang.toString()).get("mail.conformation"));
         message.setContent(generateContent("mail_conformation", new Object[] {Keys.get("APP.URL"), token}, lang));
@@ -55,8 +55,8 @@ public class MailService {
     }
 
     public static void sendResetLink(String token, String mailTo, Lang lang) throws MessagingException {
-        Message message = new MimeMessage(mail.session);
-        message.setFrom(new InternetAddress(mail.from));
+        Message message = new MimeMessage(MAIL.session);
+        message.setFrom(new InternetAddress(MAIL.from));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));
         message.setSubject(new MessageBundle(lang.toString()).get("mail.reset"));
         message.setContent(generateContent("password_reset", new Object[] {Keys.get("APP.URL"), token}, lang));
@@ -84,14 +84,14 @@ public class MailService {
         Multipart mmp = new MimeMultipart("alternative");
 
         MimeBodyPart textPart = new MimeBodyPart();
-        String text = mail.getResource("i18n/"+template+".txt", lang);
+        String text = MAIL.getResource("i18n/" + template + ".txt", lang);
         if (text != null) {
             textPart.setText(String.format(text, params), "utf-8");
             mmp.addBodyPart(textPart);
         }
 
         MimeBodyPart htmlPart = new MimeBodyPart();
-        String html = mail.getResource("i18n/"+template+".html", lang);
+        String html = MAIL.getResource("i18n/" + template + ".html", lang);
         if (html != null) {
             htmlPart.setContent(String.format(html, params), "text/html; charset=utf-8");
             mmp.addBodyPart(htmlPart);

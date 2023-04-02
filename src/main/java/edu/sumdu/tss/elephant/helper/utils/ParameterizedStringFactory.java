@@ -17,7 +17,7 @@ public record ParameterizedStringFactory(String template) {
 
     public static class ParameterizedString {
         private final HashMap<String, String> params = new HashMap<>();
-        final String template;
+        private final String template;
 
         public ParameterizedString(String template) {
             this.template = template;

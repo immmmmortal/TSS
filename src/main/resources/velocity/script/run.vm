@@ -7,7 +7,7 @@
         <table>
             <tr>
                 <th>$msg.get("database.script.run.statement")</th>
-                <th>$msg.get("database.script.run.reslut")</th>
+                <th>$msg.get("database.script.run.result")</th>
             </tr>
             #foreach ($row in $executeResults)
                 <tr>
