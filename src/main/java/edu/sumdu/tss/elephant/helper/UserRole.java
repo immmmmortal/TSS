@@ -111,10 +111,31 @@ public enum UserRole implements RouteRole {
         public long maxScriptsPerDB() {
             return 10;
         }
+    },
+    Enterprise_USER(5) {
+        public long maxConnections() {
+            return 5;
+        }
+
+        public long maxDB() {
+            return 100;
+        }
+
+        public long maxStorage() {
+            return 50 * FileUtils.ONE_MB;
+        }
+
+        public long maxBackupsPerDB() {
+            return 10;
+        }
+
+        public long maxScriptsPerDB() {
+            return 10;
+        }
     };
 
 
-    public static final RouteRole[] AUTHED = {UserRole.UNCHEKED, UserRole.BASIC_USER, UserRole.PROMOTED_USER, UserRole.ADMIN};
+    public static final RouteRole[] AUTHED = {UserRole.UNCHEKED, UserRole.BASIC_USER, UserRole.PROMOTED_USER, UserRole.ADMIN , UserRole.Enterprise_USER};
 
     @Getter
     private final Long value;
