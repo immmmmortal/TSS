@@ -29,11 +29,11 @@ public final class DbUserService {
     //TODO: SQL injection here!
     private static final ParameterizedStringFactory RESET_USER_SQL = new ParameterizedStringFactory("ALTER USER :name WITH PASSWORD ':password'");
 
-    public static void dbUserPasswordReset(String name, String password) {
-        String query = RESET_USER_SQL.addParameter("name", name).addParameter("password", password).toString();
-        JavalinLogger.info(query);
-        DBPool.getConnection().open().createQuery(query, false).executeUpdate();
-    }
+//    public static void dbUserPasswordReset(String name, String password) {
+//        String query = RESET_USER_SQL.addParameter("name", name).addParameter("password", password).toString();
+//        JavalinLogger.info(query);
+//        DBPool.getConnection().open().createQuery(query, false).executeUpdate();
+//    }
 
     public static void dropUser(String name) {
         try {
