@@ -1,0 +1,8 @@
+<h3>User management</h3>
+<div class="row">
+    <div class="row">
+        <form action="profile/remove">
+            <button type="submit" class="btn btn-lg btn-outline-primary">Delete Account</button>
+        </form>
+    </div>
+</div>
