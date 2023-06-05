@@ -1,6 +1,6 @@
 <div class="d-inline">
     #if($currentUser)
-        <span class="text-nowrap">
+        <span class="text-nowrap" style="padding: 10px">
             <a href="/profile">
                <ion-icon name="person-outline"></ion-icon>
                 $currentUser.login
