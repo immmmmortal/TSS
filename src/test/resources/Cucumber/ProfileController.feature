@@ -1,3 +1,4 @@
+
 Scenario: Show Profile
 Given a user is logged in
 When the user navigates to the profile page

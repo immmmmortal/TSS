@@ -1,3 +1,4 @@
+
 Feature: Retrieving information from Javalin Context
 
   Scenario: Retrieving the current user

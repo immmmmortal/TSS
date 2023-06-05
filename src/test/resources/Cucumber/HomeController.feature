@@ -1,3 +1,4 @@
+
 Given the user is authenticated and has logged in
 When the user accesses the home page
 Then the home page is displayed with the following information:
