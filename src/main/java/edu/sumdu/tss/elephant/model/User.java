@@ -36,6 +36,18 @@ public class User {
         this.password = crypt(password);
     }
 
+    private String profilePicturePath;
+
+    // Constructor, getters, setters, and other methods
+
+    public String getProfilePicturePath() {
+        return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+        this.profilePicturePath = profilePicturePath;
+    }
+
     public UserRole role() {
         return UserRole.byValue(role);
     }

@@ -37,12 +37,15 @@ public class ProfileController extends AbstractController {
 
     public static void resetDbPassword(Context context) {
         User user = currentUser(context);
-        //TODO add password validation
-        JavalinLogger.info(user.toString());
+        // TODO: add validation for password and username
+
+        // Update password
         user.setDbPassword(context.formParam("db-password"));
         JavalinLogger.info(user.toString());
+
         UserService.save(user);
-        DbUserService.dbUserPasswordReset(user.getUsername(), user.getDbPassword());
+//        DbUserService.dbUserPasswordReset(user.getUsername(), user.getDbPassword());
+
         context.sessionAttribute(Keys.INFO_KEY, "DB user password was changed");
         context.redirect(BASIC_PAGE);
     }
@@ -105,6 +108,17 @@ public class ProfileController extends AbstractController {
         app.post(BASIC_PAGE + "/remove-self", ProfileController::removeSelf, UserRole.AUTHED);
         app.get(BASIC_PAGE + "/remove", ProfileController::remove, UserRole.AUTHED);
         app.get(BASIC_PAGE, ProfileController::show, UserRole.AUTHED);
+        app.post(BASIC_PAGE + "/reset-username", ProfileController::resetUsername, UserRole.AUTHED);
+    }
+
+    public static void resetUsername(Context context) {
+        User user = currentUser(context);
+        user.setUsername(context.formParam("db-username"));
+        JavalinLogger.info(user.toString());
+        UserService.save(user);
+
+        context.sessionAttribute(Keys.INFO_KEY, "DB username was changed");
+        context.redirect(BASIC_PAGE);
     }
 
 }

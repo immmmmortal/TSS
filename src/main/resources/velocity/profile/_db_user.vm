@@ -1,14 +1,21 @@
 <h3>Database user</h3>
-<form action="/profile/reset-db" method="post">
-    <div class="row">
-        <div class="col">
-            <div class="form-group">
-                <label for="db-username">Username</label>
-                <input type="text" readonly class="form-control" id="db-username" aria-describedby="db-username-help"
-                       value="$currentUser.username">
-                <small id="db-username-help" class="form-text text-muted">Database username</small>
-            </div>
+
+<div class="row">
+    <form action="/profile/reset-username" method="post">
+    <div class="col">
+        <div class="form-group">
+            <label for="db-username">Username</label>
+            <input type="text" class="form-control" name="db-username" id="db-username"
+                   aria-describedby="db-username-help"
+                   value="$currentUser.username">
+            <small id="db-username-help" class="form-text text-muted">Database username</small>
         </div>
+    </div>
+        <div class="">
+            <button class="btn" type="submit">Save username</button>
+        </div>
+    </form>
+    <form action="/profile/reset-db" method="post">
         <div class="col">
             <div class="form-group">
                 <label for="db-password">Password</label>
@@ -18,8 +25,10 @@
                 <small id="db-password-help" class="form-text text-muted">Database password</small>
             </div>
         </div>
-    </div>
-    <div class="">
-        <button class="btn" type="submit">Change password</button>
-    </div>
-</form>
+        <div class="">
+            <button class="btn" type="submit">Save password1</button>
+        </div>
+    </form>
+</div>
+
+
