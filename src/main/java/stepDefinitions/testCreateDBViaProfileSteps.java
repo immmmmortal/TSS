@@ -24,12 +24,11 @@ public class testCreateDBViaProfileSteps {
     public void i_am_logged_in_to_my_account() {
 
         driver = new ChromeDriver();
-        new WebDriverWait(driver, Duration.ofSeconds(10));
+        new WebDriverWait(driver, Duration.ofSeconds(5));
         driver.navigate().to("http://localhost:7000/login");
 
-
-        driver.findElement(By.name("login")).sendKeys("kuza617@gmail.com");
-        driver.findElement(By.name("password")).sendKeys(".kYM8jRj8cJCpuD");
+        driver.findElement(By.name("login")).sendKeys("wanin69399@ratedane.com");
+        driver.findElement(By.name("password")).sendKeys("76Xday6955-");
         driver.findElement(By.xpath("/html/body/main/div[1]/div/div[2]/form/button")).click();
     }
 
@@ -57,8 +56,6 @@ public class testCreateDBViaProfileSteps {
     public void should_be_listed_in_my_account_info() {
 
         driver.get("http://localhost:7000");
-
-
         boolean databaseList = driver.findElement(By.xpath("/html/body/div/div/main/div[3]/div/div[2]")).isDisplayed();
         assertTrue(databaseList);
 
