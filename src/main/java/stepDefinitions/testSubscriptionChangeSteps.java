@@ -44,7 +44,7 @@ public class testSubscriptionChangeSteps {
     @Then("I should see a notification that my plan has been changed")
     public void i_should_see_a_notification_that_my_plan_has_been_changed() {
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/div/main/div[1]")));
         WebElement notification = driver.findElement(By.xpath("/html/body/div/div/main/div[1]"));
         assertEquals(notification.getText(), "Role has been changed");

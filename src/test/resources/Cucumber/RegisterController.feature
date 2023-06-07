@@ -1,4 +1,3 @@
-
 Feature: User registration
 
   Scenario: User visits registration page

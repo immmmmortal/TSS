@@ -26,7 +26,7 @@ public class testShowPasswordSteps {
     @When("I click the show password button")
     public void i_click_the_show_password_button() {
 
-        WebElement element = new WebDriverWait(driver, Duration.ofSeconds(5))
+        WebElement element = new WebDriverWait(driver, Duration.ofSeconds(5).getSeconds())
                 .until(ExpectedConditions.elementToBeClickable(By.id("pass-show")));
         driver.findElement(By.id("pass-show")).click();
     }
@@ -41,7 +41,7 @@ public class testShowPasswordSteps {
     @Then("I should be able to hide the password")
     public void i_should_be_able_to_hide_the_password() {
 
-        WebElement element = new WebDriverWait(driver, Duration.ofSeconds(5))
+        WebElement element = new WebDriverWait(driver, Duration.ofSeconds(5).getSeconds())
                 .until(ExpectedConditions.elementToBeClickable(By.id("pass-hide")));
         driver.findElement(By.id("pass-hide")).click();
         WebElement passwordInput = driver.findElement(By.name("password"));

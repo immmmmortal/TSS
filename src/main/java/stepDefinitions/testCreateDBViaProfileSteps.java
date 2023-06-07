@@ -24,7 +24,7 @@ public class testCreateDBViaProfileSteps {
     public void i_am_logged_in_to_my_account() {
 
         driver = new ChromeDriver();
-        new WebDriverWait(driver, Duration.ofSeconds(10));
+        new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
         driver.navigate().to("http://localhost:7000/login");
 
 
@@ -41,7 +41,7 @@ public class testCreateDBViaProfileSteps {
     public void i_create_a_new_database_with_name() {
 
         if (driver.getPageSource().contains("You reach you DB limit - delete one or upgrade plan.")) {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5).getSeconds());
             wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/div/main/div[3]/div/div[2]/div[1]/div[2]/div/form/button")));
             driver.findElement(By.xpath("/html/body/div/div/main/div[3]/div/div[2]/div[1]/div[2]/div/form/button")).click();
             driver.navigate().back();

@@ -19,7 +19,7 @@ public class testRememberMeFuncSteps {
     @Given("User on the login page")
     public void user_on_the_login_page() {
         driver = new ChromeDriver();
-        new WebDriverWait(driver, Duration.ofSeconds(10));
+        new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
         driver.navigate().to("http://localhost:7000/login");
     }
     @When("I enter valid credentials with remember me checked and click login")

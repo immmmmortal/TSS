@@ -23,7 +23,7 @@ public class testHomePageSteps {
 
     @Then("I should see the website logo")
     public void i_should_see_website_logo() throws Throwable {
-        WebDriverWait wait  = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait  = new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/header/a")));
     }
 

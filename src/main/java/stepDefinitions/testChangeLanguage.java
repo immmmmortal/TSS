@@ -27,7 +27,7 @@ public class testChangeLanguage{
     @When("I click the language switcher button")
     public void i_click_the_language_switcher_button() {
 
-        WebElement element = new WebDriverWait(driver, Duration.ofSeconds(5))
+        WebElement element = new WebDriverWait(driver, Duration.ofSeconds(5).getSeconds())
                 .until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/header/div/a[1]")));
         driver.findElement(By.xpath("/html/body/header/div/a[1]")).click();
     }

@@ -1,4 +1,3 @@
-
 Feature: Login functionality
 
   Scenario: User logs in with valid credentials

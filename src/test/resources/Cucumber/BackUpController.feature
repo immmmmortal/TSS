@@ -1,4 +1,3 @@
-
 Feature: Backup management
 
   Background:
