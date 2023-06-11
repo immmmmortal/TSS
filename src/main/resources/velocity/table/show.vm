@@ -1,27 +1,20 @@
-#parse("/velocity/db_layout.vm")
-#@dbLayout()
-<h1>$table.name</h1>
-<table class="table">
+<!-- Додайте наступний код у шаблон -->
+<h2>Table Columns:</h2>
+<table>
+    <thead>
     <tr>
-        #foreach ($cel in $table.columns())
-            <th title="$cel.type">$cel.name</th>
-        #end
+        <th>Name</th>
+        <th>Type</th>
+        <th>Constraints</th>
     </tr>
-    #foreach ($row in $table.rows())
+    </thead>
+    <tbody>
+        #foreach ($column in $columns)
         <tr>
-            #foreach ($cel in $table.columns())
-                #set ($current = $row.getObject($cel.name))
-                <td>
-                    #if ($current)
-                        $current
-                    #else
-                        <span class="NULL">NULL</span>
-                    #end
-                </td>
-            #end
+            <td>$column.name</td>
+            <td>$column.type</td>
+            <td>$column.constraints</td>
         </tr>
-    #end
-
+        #end
+    </tbody>
 </table>
-    $pager
-#end

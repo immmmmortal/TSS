@@ -8,6 +8,8 @@ import edu.sumdu.tss.elephant.model.TableService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import java.util.List;
+
 /**
  * show DB stats
  **/
@@ -28,7 +30,7 @@ public class TableController extends AbstractController {
 
     public static void index(Context context) {
         Database database = currentDB(context);
-        var tables = TableService.list(database.getName());
+        List<String> tables = TableService.list(database.getName());
         var model = currentModel(context);
         model.put("tables", tables);
         ViewHelper.breadcrumb(context).add("Tables");
@@ -43,8 +45,12 @@ public class TableController extends AbstractController {
         var table = TableService.byName(database.getName(), tableName, limit, offset * limit);
         int size = TableService.getTableSize(database.getName(), tableName);
 
+        // Retrieve table columns information
+        var columns = TableService.getTableColumns(database.getName(), tableName);
+
         var model = currentModel(context);
         model.put("table", table);
+        model.put("columns", columns);
         model.put("pager", ViewHelper.pager((size / limit) + 1, offset));
         ViewHelper.breadcrumb(context).add(DEFAULT_CRUMB.addParameter("database", database.getName()).toString());
         ViewHelper.breadcrumb(context).add(tableName);
